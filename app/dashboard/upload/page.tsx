@@ -18,7 +18,7 @@ import { toast } from "sonner";
 interface UploadedFile {
   id: string;
   name: string;
-  url: string;
+  key: string;
   size: number;
   type: string;
   uploadedAt: Date;
@@ -126,7 +126,7 @@ export default function UploadPage() {
         const newFile: UploadedFile = {
           id: uploadedFile.id,
           name: file.name,
-          url: uploadedFile.filePath,
+          key: uploadedFile.filePath, // filePath is the key
           size: file.size,
           type: file.type,
           uploadedAt: new Date(uploadedFile.createdAt),
@@ -171,8 +171,26 @@ export default function UploadPage() {
     }
   };
 
-  const removeFile = (id: string) => {
-    setUploadedFiles((prev) => prev.filter((file) => file.id !== id));
+  const viewFile = async (key: string) => {
+    try {
+      const response = await fetch("/api/get-signed-url", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ key }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to get signed URL");
+      }
+
+      const { url } = await response.json();
+      window.open(url, "_blank");
+    } catch (error) {
+      console.error("View file error:", error);
+      toast.error("Failed to view file");
+    }
   };
 
   const formatFileSize = (bytes: number) => {
@@ -335,15 +353,14 @@ export default function UploadPage() {
                           Summarize
                         </Button>
                       )}
-                      <Link href={`/dashboard/meeting/${file.id}`}>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="flex-1 text-xs"
-                        >
-                          View
-                        </Button>
-                      </Link>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => viewFile(file.key)}
+                        className="flex-1 text-xs"
+                      >
+                        View
+                      </Button>
                     </div>
                   </div>
                   <Button

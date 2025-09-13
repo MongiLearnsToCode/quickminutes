@@ -19,10 +19,8 @@ export const uploadImageAssets = async (buffer: Buffer, key: string) => {
       Key: key,
       Body: buffer,
       ContentType: "image/*",
-      ACL: "public-read", // optional if bucket is public
     })
   );
 
-  const publicUrl = `https://pub-6f0cf05705c7412b93a792350f3b3aa5.r2.dev/${key}`;
-  return publicUrl;
+  return key;
 };

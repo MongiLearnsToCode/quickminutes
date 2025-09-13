@@ -17,7 +17,7 @@ export default function PrivacyPolicy() {
         <Card className="shadow-xl border-0">
           <CardContent className="p-8 md:p-12">
             <h1 className="text-3xl md:text-4xl font-bold mb-8">
-              Privacy Policy
+              Privacy Policy for QuickMinutes
             </h1>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-8">
               Last updated: {new Date().toLocaleDateString()}
@@ -29,8 +29,8 @@ export default function PrivacyPolicy() {
                   1. Introduction
                 </h2>
                 <p className="leading-relaxed">
-                  Welcome to Nextjs Starter Kit (&aposwe,&apos &aposour,&apos or
-                  &aposus&apos). We are committed to protecting your personal
+                  Welcome to QuickMinutes (&apos;we,&apos; &apos;our,&apos; or
+                  &apos;us&apos;). We are committed to protecting your personal
                   information and your right to privacy. This Privacy Policy
                   explains how we collect, use, disclose, and safeguard your
                   information when you use our service.
@@ -55,22 +55,21 @@ export default function PrivacyPolicy() {
                       <li>
                         Google account information (when using Google Sign-In)
                       </li>
-                      <li>Organization details</li>
                     </ul>
                   </div>
 
                   <div>
                     <h3 className="text-lg font-medium mb-2">
-                      Pass Information
+                      Meeting Data
                     </h3>
                     <p className="leading-relaxed">
-                      When you create Apple Passes, we store:
+                      When you upload audio files for transcription and
+                      summarization, we store:
                     </p>
                     <ul className="list-disc list-inside mt-2 space-y-1 ml-4">
-                      <li>Pass content and metadata</li>
-                      <li>Pass templates and designs</li>
-                      <li>Pass usage analytics</li>
-                      <li>Pass installation data</li>
+                      <li>The uploaded audio file</li>
+                      <li>The generated transcript</li>
+                      <li>The generated summary and action items</li>
                     </ul>
                   </div>
 
@@ -102,7 +101,7 @@ export default function PrivacyPolicy() {
                 <ul className="list-disc list-inside space-y-1 ml-4">
                   <li>Provide and maintain our service</li>
                   <li>Create and manage your account</li>
-                  <li>Generate and distribute Apple Passes</li>
+                  <li>Transcribe and summarize your meetings</li>
                   <li>Send you important updates and notifications</li>
                   <li>Respond to your inquiries and support requests</li>
                   <li>Monitor and analyze usage patterns</li>
@@ -125,7 +124,8 @@ export default function PrivacyPolicy() {
                   </li>
                   <li>
                     <strong>Service providers:</strong> We share data with
-                    third-party vendors who assist in providing our services
+                    third-party vendors who assist in providing our services,
+                    such as OpenAI for transcription and summarization.
                   </li>
                   <li>
                     <strong>Legal requirements:</strong> We may disclose
@@ -155,12 +155,17 @@ export default function PrivacyPolicy() {
                     <strong>Google Sign-In:</strong> For authentication services
                   </li>
                   <li>
-                    <strong>Payment processors:</strong> For handling
+                    <strong>Polar.sh:</strong> For handling
                     subscription payments
                   </li>
                   <li>
-                    <strong>Analytics services:</strong> To understand service
-                    usage
+                    <strong>OpenAI:</strong> For transcription and summarization
+                  </li>
+                  <li>
+                    <strong>Cloudflare R2:</strong> For storing audio files
+                  </li>
+                  <li>
+                    <strong>Neon PostgreSQL:</strong> For database hosting
                   </li>
                 </ul>
                 <p className="mt-3 leading-relaxed">
@@ -175,9 +180,9 @@ export default function PrivacyPolicy() {
                 </h2>
                 <p className="leading-relaxed">
                   We implement appropriate technical and organizational security
-                  measures to protect your personal information. However, no
-                  method of transmission over the Internet or electronic storage
-                  is 100% secure, and we cannot guarantee absolute security.
+                  measures to protect your personal information. Your audio
+                  files are stored in a private Cloudflare R2 bucket and are
+                  only accessible to you through our service.
                 </p>
               </section>
 
@@ -186,11 +191,11 @@ export default function PrivacyPolicy() {
                   7. Data Retention
                 </h2>
                 <p className="leading-relaxed">
-                  We retain your personal information for as long as necessary
-                  to provide our services and fulfill the purposes outlined in
-                  this Privacy Policy. We will also retain and use your
-                  information to comply with legal obligations, resolve
-                  disputes, and enforce our agreements.
+                  We retain your personal information and meeting data for as
+                  long as your account is active or as needed to provide you
+                  with our services. You can delete your meetings at any time,
+                  which will permanently delete the audio file, transcript, and
+                  summary.
                 </p>
               </section>
 
@@ -199,79 +204,34 @@ export default function PrivacyPolicy() {
                   8. Your Rights
                 </h2>
                 <p className="leading-relaxed mb-3">
-                  Depending on your location, you may have the following rights:
+                  You have the right to:
                 </p>
                 <ul className="list-disc list-inside space-y-1 ml-4">
                   <li>
                     <strong>Access:</strong> Request access to your personal
-                    information
+                    information and meeting data.
                   </li>
                   <li>
                     <strong>Correction:</strong> Request correction of
-                    inaccurate information
+                    inaccurate information.
                   </li>
                   <li>
-                    <strong>Deletion:</strong> Request deletion of your personal
-                    information
-                  </li>
-                  <li>
-                    <strong>Portability:</strong> Request a copy of your data in
-                    a portable format
-                  </li>
-                  <li>
-                    <strong>Objection:</strong> Object to certain processing of
-                    your information
+                    <strong>Deletion:</strong> Request deletion of your account
+                    and all associated data.
                   </li>
                 </ul>
               </section>
 
               <section>
                 <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
-                  9. Children&aposs Privacy
-                </h2>
-                <p className="leading-relaxed">
-                  Our service is not intended for children under 13 years of
-                  age. We do not knowingly collect personal information from
-                  children under 13. If you are a parent or guardian and believe
-                  your child has provided us with personal information, please
-                  contact us.
-                </p>
-              </section>
-
-              <section>
-                <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
-                  10. International Data Transfers
-                </h2>
-                <p className="leading-relaxed">
-                  Your information may be transferred to and processed in
-                  countries other than your country of residence. These
-                  countries may have data protection laws that are different
-                  from the laws of your country.
-                </p>
-              </section>
-
-              <section>
-                <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
-                  11. Updates to This Policy
-                </h2>
-                <p className="leading-relaxed">
-                  We may update this Privacy Policy from time to time. We will
-                  notify you of any changes by posting the new Privacy Policy on
-                  this page and updating the &aposLast updated&apos date.
-                </p>
-              </section>
-
-              <section>
-                <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
-                  12. Contact Us
+                  9. Contact Us
                 </h2>
                 <p className="leading-relaxed">
                   If you have any questions about this Privacy Policy or our
                   data practices, please contact us at:
                 </p>
                 <div className="mt-3 space-y-1">
-                  <p>Email: privacy@applepass.com</p>
-                  <p>Address: [Your Company Address]</p>
+                  <p>Email: privacy@quickminutes.com</p>
                 </div>
               </section>
             </div>

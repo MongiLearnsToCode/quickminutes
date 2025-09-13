@@ -1,6 +1,7 @@
 import {
   S3Client,
   PutObjectCommand,
+  DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 
 const r2 = new S3Client({
@@ -19,10 +20,17 @@ export const uploadAudioAssets = async (buffer: Buffer, key: string) => {
       Key: key,
       Body: buffer,
       ContentType: "audio/*",
-      ACL: "public-read", // optional if bucket is public
     })
   );
 
-  const publicUrl = `https://pub-6f0cf05705c7412b93a792350f3b3aa5.r2.dev/${key}`;
-  return publicUrl;
+  return key;
+};
+
+export const deleteAudioAssets = async (key: string) => {
+  await r2.send(
+    new DeleteObjectCommand({
+      Bucket: process.env.R2_BUCKET_NAME!,
+      Key: key,
+    })
+  );
 };

@@ -1,9 +1,14 @@
+"use client";
+
 import { db } from "@/db/drizzle";
 import { meetings, summaries, transcripts } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { jsPDF } from "jspdf";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 async function getMeetingDetails(meetingId: string) {
   const [meeting] = await db
@@ -43,14 +48,83 @@ function downloadPdfFile(content: string, filename: string) {
   doc.save(filename);
 }
 
-export default async function MeetingDetailsPage({.params,}: {params: { meetingId: string };}) {
-  const { meeting, transcript, summary } = await getMeetingDetails(
-    params.meetingId,
-  );
+export default function MeetingDetailsPage({.params,}: {params: { meetingId: string };}) {
+  const router = useRouter();
+  const [meeting, setMeeting] = useState<any>(null);
+  const [transcript, setTranscript] = useState<any>(null);
+  const [summary, setSummary] = useState<any>(null);
+  const [signedUrl, setSignedUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      const { meeting, transcript, summary } = await getMeetingDetails(
+        params.meetingId,
+      );
+      setMeeting(meeting);
+      setTranscript(transcript);
+      setSummary(summary);
+
+      if (meeting) {
+        try {
+          const response = await fetch("/api/get-signed-url", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ key: meeting.filePath }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to get signed URL");
+          }
+
+          const { url } = await response.json();
+          setSignedUrl(url);
+        } catch (error) {
+          console.error("View file error:", error);
+          toast.error("Failed to load audio file");
+        }
+      }
+    }
+
+    fetchData();
+  }, [params.meetingId]);
+
+  const deleteMeeting = async () => {
+    try {
+      const response = await fetch("/api/delete-meeting", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ meetingId: params.meetingId }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete meeting");
+      }
+
+      toast.success("Meeting deleted successfully");
+      router.push("/dashboard/history");
+    } catch (error) {
+      console.error("Delete meeting error:", error);
+      toast.error("Failed to delete meeting");
+    }
+  };
+
+  if (!meeting) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-3xl font-semibold tracking-tight">Meeting Details</h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-semibold tracking-tight">Meeting Details</h1>
+        <Button variant="destructive" onClick={deleteMeeting}>
+          Delete Meeting
+        </Button>
+      </div>
+      {signedUrl && <audio controls src={signedUrl} />}
       <div className="grid gap-6 md:grid-cols-2">
         <div>
           <h2 className="text-xl font-semibold">Transcript</h2>
