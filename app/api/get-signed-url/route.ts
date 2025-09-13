@@ -62,4 +62,5 @@ export async function POST(req: NextRequest) {
       { error: "Failed to get signed URL", details: errorMessage },
       { status: 500 },
     );
+  }
 }
