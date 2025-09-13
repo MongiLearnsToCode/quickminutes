@@ -21,6 +21,7 @@ interface UploadedFile {
   size: number;
   type: string;
   uploadedAt: Date;
+  status: string;
 }
 
 export default function UploadPage() {
@@ -28,6 +29,33 @@ export default function UploadPage() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [dragActive, setDragActive] = useState(false);
+
+  const transcribe = async (meetingId: string) => {
+    try {
+      const response = await fetch("/api/transcribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ meetingId }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Transcription failed");
+      }
+
+      toast.success("Transcription started");
+      // Optionally, update the status of the file in the UI
+      setUploadedFiles((prev) =>
+        prev.map((file) =>
+          file.id === meetingId ? { ...file, status: "transcribing" } : file,
+        ),
+      );
+    } catch (error) {
+      console.error("Transcription error:", error);
+      toast.error("Failed to start transcription");
+    }
+  };
 
   const handleFileUpload = async (files: FileList | File[]) => {
     const fileArray = Array.from(files);
@@ -77,6 +105,7 @@ export default function UploadPage() {
           size: file.size,
           type: file.type,
           uploadedAt: new Date(uploadedFile.createdAt),
+          status: uploadedFile.status,
         };
 
         setUploadedFiles((prev) => [newFile, ...prev]);
@@ -263,15 +292,16 @@ export default function UploadPage() {
                     <div className="flex items-center justify-between text-xs text-muted-foreground mt-1">
                       <span>{formatFileSize(file.size)}</span>
                       <span>{file.uploadedAt.toLocaleDateString()}</span>
+                      <Badge variant={file.status === 'transcribed' ? 'default' : 'secondary'}>{file.status}</Badge>
                     </div>
                     <div className="mt-2 flex items-center gap-2">
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => navigator.clipboard.writeText(file.url)}
+                        onClick={() => transcribe(file.id)}
                         className="flex-1 text-xs"
                       >
-                        Copy URL
+                        Transcribe
                       </Button>
                       <Button
                         size="sm"
