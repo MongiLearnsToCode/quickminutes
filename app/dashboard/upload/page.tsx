@@ -188,14 +188,19 @@ export default function UploadPage() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to get signed URL");
+        const errorData = await response.json();
+        throw new Error(errorData.details || "Failed to get signed URL");
       }
 
       const { url } = await response.json();
       window.open(url, "_blank");
     } catch (error) {
       console.error("View file error:", error);
-      toast.error("Failed to view file");
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Failed to view file");
+      }
     }
   };
 
