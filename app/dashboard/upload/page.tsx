@@ -10,8 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { Check, FileImage, Upload, X } from "lucide-react";
-import Image from "next/image";
+import { Check, FileAudio, Upload, X } from "lucide-react";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 
@@ -34,13 +33,8 @@ export default function UploadPage() {
     const fileArray = Array.from(files);
 
     for (const file of fileArray) {
-      if (!file.type.startsWith("image/")) {
-        toast.error(`${file.name} is not an image file`);
-        continue;
-      }
-
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error(`${file.name} is too large (max 5MB)`);
+      if (!file.type.startsWith("audio/")) {
+        toast.error(`${file.name} is not an audio file`);
         continue;
       }
 
@@ -62,7 +56,7 @@ export default function UploadPage() {
           });
         }, 200);
 
-        const response = await fetch("/api/upload-image", {
+        const response = await fetch("/api/upload-audio", {
           method: "POST",
           body: formData,
         });
@@ -74,16 +68,7 @@ export default function UploadPage() {
           throw new Error("Upload failed");
         }
 
-        const { url } = await response.json();
-
-        const uploadedFile: UploadedFile = {
-          id: crypto.randomUUID(),
-          name: file.name,
-          url,
-          size: file.size,
-          type: file.type,
-          uploadedAt: new Date(),
-        };
+        const { uploadedFile } = await response.json();
 
         setUploadedFiles((prev) => [uploadedFile, ...prev]);
         toast.success(`${file.name} uploaded successfully`);
@@ -138,9 +123,9 @@ export default function UploadPage() {
   return (
     <div className="p-6 space-y-6">
       <div>
-        <h1 className="text-3xl font-semibold tracking-tight">File Upload</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">Upload Meeting</h1>
         <p className="text-muted-foreground mt-2">
-          Upload images to Cloudflare R2 storage with drag and drop support
+          Upload an audio file to transcribe and summarize your meeting.
         </p>
       </div>
 
@@ -150,10 +135,10 @@ export default function UploadPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Upload className="h-5 w-5" />
-              Upload Images
+              Upload Audio
             </CardTitle>
             <CardDescription>
-              Upload images to Cloudflare R2. Maximum file size is 5MB.
+              Upload an audio file (mp3, wav). Max 100MB.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -170,14 +155,14 @@ export default function UploadPage() {
             >
               <Input
                 type="file"
-                accept="image/*"
+                accept="audio/*"
                 multiple
                 onChange={handleInputChange}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 disabled={uploading}
               />
               <div className="space-y-2">
-                <FileImage className="h-10 w-10 mx-auto text-muted-foreground" />
+                <FileAudio className="h-10 w-10 mx-auto text-muted-foreground" />
                 <div>
                   <p className="text-sm font-medium">
                     {dragActive
@@ -185,7 +170,7 @@ export default function UploadPage() {
                       : "Click to upload or drag and drop"}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    PNG, JPG, GIF up to 5MB
+                    MP3, WAV up to 100MB
                   </p>
                 </div>
               </div>
@@ -206,9 +191,9 @@ export default function UploadPage() {
         {/* Upload Info */}
         <Card>
           <CardHeader>
-            <CardTitle>About R2 Storage</CardTitle>
+            <CardTitle>About QuickMinutes</CardTitle>
             <CardDescription>
-              Cloudflare R2 provides S3-compatible object storage
+              QuickMinutes uses AI to transcribe and summarize your meetings.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -216,33 +201,26 @@ export default function UploadPage() {
               <div className="flex items-start gap-3">
                 <Check className="h-4 w-4 text-green-500 mt-0.5" />
                 <div className="text-sm">
-                  <p className="font-medium">Global CDN</p>
+                  <p className="font-medium">Fast Transcription</p>
                   <p className="text-muted-foreground">
-                    Fast delivery worldwide
+                    Get a text transcript of your meeting in minutes.
                   </p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-4 w-4 text-green-500 mt-0.5" />
                 <div className="text-sm">
-                  <p className="font-medium">Zero Egress Fees</p>
-                  <p className="text-muted-foreground">No bandwidth charges</p>
+                  <p className="font-medium">AI Summaries</p>
+                  <p className="text-muted-foreground">Key points and action items, automatically generated.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <Check className="h-4 w-4 text-green-500 mt-0.5" />
                 <div className="text-sm">
-                  <p className="font-medium">S3 Compatible</p>
+                  <p className="font-medium">Secure Storage</p>
                   <p className="text-muted-foreground">
-                    Works with existing tools
+                    Your files are stored securely in the cloud.
                   </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <Check className="h-4 w-4 text-green-500 mt-0.5" />
-                <div className="text-sm">
-                  <p className="font-medium">Auto Scaling</p>
-                  <p className="text-muted-foreground">Handles any file size</p>
                 </div>
               </div>
             </div>
@@ -254,9 +232,9 @@ export default function UploadPage() {
       {uploadedFiles.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Uploaded Files ({uploadedFiles.length})</CardTitle>
+            <CardTitle>Uploaded Meetings ({uploadedFiles.length})</CardTitle>
             <CardDescription>
-              Recently uploaded images to R2 storage
+              Recently uploaded meetings.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -266,15 +244,6 @@ export default function UploadPage() {
                   key={file.id}
                   className="group relative border rounded-lg overflow-hidden hover:shadow-md transition-shadow"
                 >
-                  <div className="aspect-video relative bg-muted">
-                    <Image
-                      src={file.url}
-                      alt={file.name}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    />
-                  </div>
                   <div className="p-3">
                     <p
                       className="font-medium text-sm truncate"
@@ -301,7 +270,7 @@ export default function UploadPage() {
                         onClick={() => window.open(file.url, "_blank")}
                         className="flex-1 text-xs"
                       >
-                        Open
+                        View
                       </Button>
                     </div>
                   </div>

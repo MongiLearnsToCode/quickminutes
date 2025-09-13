@@ -83,3 +83,34 @@ export const subscription = pgTable("subscription", {
   customFieldData: text("customFieldData"), // JSON string
   userId: text("userId").references(() => user.id),
 });
+
+// QuickMinutes Tables
+export const meetings = pgTable("meetings", {
+  id: text("id").primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  filePath: text("filePath").notNull(),
+  duration: integer("duration").notNull(),
+  status: text("status").notNull(),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+});
+
+export const transcripts = pgTable("transcripts", {
+  id: text("id").primaryKey(),
+  meetingId: text("meetingId")
+    .notNull()
+    .references(() => meetings.id, { onDelete: "cascade" }),
+  text: text("text").notNull(),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+});
+
+export const summaries = pgTable("summaries", {
+  id: text("id").primaryKey(),
+  meetingId: text("meetingId")
+    .notNull()
+    .references(() => meetings.id, { onDelete: "cascade" }),
+  summary: text("summary").notNull(),
+  actionItems: text("actionItems"),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+});
