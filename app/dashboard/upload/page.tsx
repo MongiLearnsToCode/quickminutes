@@ -70,7 +70,16 @@ export default function UploadPage() {
 
         const { uploadedFile } = await response.json();
 
-        setUploadedFiles((prev) => [uploadedFile, ...prev]);
+        const newFile: UploadedFile = {
+          id: uploadedFile.id,
+          name: file.name,
+          url: uploadedFile.filePath,
+          size: file.size,
+          type: file.type,
+          uploadedAt: new Date(uploadedFile.createdAt),
+        };
+
+        setUploadedFiles((prev) => [newFile, ...prev]);
         toast.success(`${file.name} uploaded successfully`);
       } catch (error) {
         console.error("Upload error:", error);
