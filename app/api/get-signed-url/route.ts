@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
       try {
         const url = new URL(key);
         fileKey = url.pathname.substring(1); // Remove leading '/'
-      } catch (e) {
+      } catch (_e) {
         return NextResponse.json({ error: "Invalid file key" }, { status: 400 });
       }
     }
