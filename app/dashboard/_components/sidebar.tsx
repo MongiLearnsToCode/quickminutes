@@ -4,6 +4,7 @@ import UserProfile from "@/components/user-profile";
 import clsx from "clsx";
 import {
   Banknote,
+  History,
   HomeIcon,
   LucideIcon,
   MessageCircleIcon,
@@ -34,6 +35,11 @@ const navItems: NavItem[] = [
     label: "Upload",
     href: "/dashboard/upload",
     icon: Upload,
+  },
+  {
+    label: "History",
+    href: "/dashboard/history",
+    icon: History,
   },
   {
     label: "Payment Gated",
