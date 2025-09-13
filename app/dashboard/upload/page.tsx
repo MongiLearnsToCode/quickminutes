@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Check, FileAudio, Upload, X } from "lucide-react";
+import Link from "next/link";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 
@@ -335,14 +335,15 @@ export default function UploadPage() {
                           Summarize
                         </Button>
                       )}
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => window.open(file.url, "_blank")}
-                        className="flex-1 text-xs"
-                      >
-                        View
-                      </Button>
+                      <Link href={`/dashboard/meeting/${file.id}`}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1 text-xs"
+                        >
+                          View
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                   <Button
