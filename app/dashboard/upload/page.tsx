@@ -11,7 +11,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
+import { Check, FileAudio, Upload, X } from "lucide-react";
+
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 

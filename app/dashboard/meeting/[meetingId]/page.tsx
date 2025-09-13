@@ -10,6 +10,30 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
+interface Meeting {
+  id: string;
+  userId: string;
+  filePath: string;
+  duration: number;
+  status: string;
+  createdAt: Date;
+}
+
+interface Transcript {
+  id: string;
+  meetingId: string;
+  text: string;
+  createdAt: Date;
+}
+
+interface Summary {
+  id: string;
+  meetingId: string;
+  summary: string;
+  actionItems: string;
+  createdAt: Date;
+}
+
 async function getMeetingDetails(meetingId: string) {
   const [meeting] = await db
     .select()
@@ -50,9 +74,9 @@ function downloadPdfFile(content: string, filename: string) {
 
 export default function MeetingDetailsPage({ params }: { params: { meetingId: string } }) {
   const router = useRouter();
-  const [meeting, setMeeting] = useState<any>(null);
-  const [transcript, setTranscript] = useState<any>(null);
-  const [summary, setSummary] = useState<any>(null);
+  const [meeting, setMeeting] = useState<Meeting | null>(null);
+  const [transcript, setTranscript] = useState<Transcript | null>(null);
+  const [summary, setSummary] = useState<Summary | null>(null);
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
 
   useEffect(() => {
@@ -60,9 +84,9 @@ export default function MeetingDetailsPage({ params }: { params: { meetingId: st
       const { meeting, transcript, summary } = await getMeetingDetails(
         params.meetingId,
       );
-      setMeeting(meeting);
-      setTranscript(transcript);
-      setSummary(summary);
+      setMeeting(meeting as Meeting);
+      setTranscript(transcript as Transcript);
+      setSummary(summary as Summary);
 
       if (meeting) {
         try {
