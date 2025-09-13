@@ -65,8 +65,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: "Transcription complete" });
   } catch (error) {
     console.error("Transcription error:", error);
+    let errorMessage = "An unknown error occurred";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
     return NextResponse.json(
-      { error: "Failed to transcribe audio" },
+      { error: "Failed to transcribe audio", details: errorMessage },
       { status: 500 },
     );
   }

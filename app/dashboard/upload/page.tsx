@@ -43,7 +43,8 @@ export default function UploadPage() {
       });
 
       if (!response.ok) {
-        throw new Error("Transcription failed");
+        const errorData = await response.json();
+        throw new Error(errorData.details || "Transcription failed");
       }
 
       toast.success("Transcription started");
@@ -54,7 +55,11 @@ export default function UploadPage() {
       );
     } catch (error) {
       console.error("Transcription error:", error);
-      toast.error("Failed to start transcription");
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Failed to start transcription");
+      }
     }
   };
 
