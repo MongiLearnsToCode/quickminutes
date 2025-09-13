@@ -23,7 +23,8 @@ export const uploadAudioAssets = async (buffer: Buffer, key: string) => {
     })
   );
 
-  return key;
+  const publicUrl = `${process.env.R2_PUBLIC_URL}/${key}`;
+  return publicUrl;
 };
 
 export const deleteAudioAssets = async (key: string) => {
