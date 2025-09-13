@@ -48,7 +48,7 @@ function downloadPdfFile(content: string, filename: string) {
   doc.save(filename);
 }
 
-export default function MeetingDetailsPage({.params,}: {params: { meetingId: string };}) {
+export default function MeetingDetailsPage({ params }: { params: { meetingId: string } }) {
   const router = useRouter();
   const [meeting, setMeeting] = useState<any>(null);
   const [transcript, setTranscript] = useState<any>(null);
