@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 import { Check, FileAudio, Upload, X } from "lucide-react";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
@@ -45,7 +46,6 @@ export default function UploadPage() {
       }
 
       toast.success("Transcription started");
-      // Optionally, update the status of the file in the UI
       setUploadedFiles((prev) =>
         prev.map((file) =>
           file.id === meetingId ? { ...file, status: "transcribing" } : file,
@@ -54,6 +54,32 @@ export default function UploadPage() {
     } catch (error) {
       console.error("Transcription error:", error);
       toast.error("Failed to start transcription");
+    }
+  };
+
+  const summarize = async (meetingId: string) => {
+    try {
+      const response = await fetch("/api/summarize", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ meetingId }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Summarization failed");
+      }
+
+      toast.success("Summarization started");
+      setUploadedFiles((prev) =>
+        prev.map((file) =>
+          file.id === meetingId ? { ...file, status: "summarizing" } : file,
+        ),
+      );
+    } catch (error) {
+      console.error("Summarization error:", error);
+      toast.error("Failed to start summarization");
     }
   };
 
@@ -73,7 +99,6 @@ export default function UploadPage() {
         const formData = new FormData();
         formData.append("file", file);
 
-        // Simulate progress
         const progressInterval = setInterval(() => {
           setUploadProgress((prev) => {
             if (prev >= 90) {
@@ -168,7 +193,6 @@ export default function UploadPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Upload Area */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -226,7 +250,6 @@ export default function UploadPage() {
           </CardContent>
         </Card>
 
-        {/* Upload Info */}
         <Card>
           <CardHeader>
             <CardTitle>About QuickMinutes</CardTitle>
@@ -266,7 +289,6 @@ export default function UploadPage() {
         </Card>
       </div>
 
-      {/* Uploaded Files */}
       {uploadedFiles.length > 0 && (
         <Card>
           <CardHeader>
@@ -303,6 +325,16 @@ export default function UploadPage() {
                       >
                         Transcribe
                       </Button>
+                      {file.status === 'transcribed' && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => summarize(file.id)}
+                          className="flex-1 text-xs"
+                        >
+                          Summarize
+                        </Button>
+                      )}
                       <Button
                         size="sm"
                         variant="outline"
